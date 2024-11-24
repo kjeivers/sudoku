@@ -1,12 +1,15 @@
 import unittest
+from unittest import TestCase
 
-from solver import *
+from board import *
 
-class TestCases(unittest.TestCase):
+
+class TestSudokuBoard(unittest.TestCase):
     def test_print_board(self):
-        pretty = SudokuBoard("785243691931856724462971583457968132612573498398214657379524816285167349146839725").pretty_print()
+        pretty = SudokuBoard(
+            "785243691931856724462971583457968132612573498398214657379524816285167349146839725").pretty_print()
         self.assertEqual(pretty,
-"""
+                         """
 785|243|691
 931|856|724
 462|971|583
@@ -20,32 +23,28 @@ class TestCases(unittest.TestCase):
 146|839|725
 """.strip())
 
-    def test_get_row(self):
+    def test_get_row_str(self):
         board = SudokuBoard("785243691931856724462971583457968132612573498398214657379524816285167349146839725")
-        self.assertEqual("785243691", board.get_row(1))
-        self.assertEqual("146839725", board.get_row(9))
+        self.assertEqual("785243691", board.get_row_str(1))
+        self.assertEqual("146839725", board.get_row_str(9))
 
-    def test_get_column(self):
+    def test_get_column_str(self):
         board = SudokuBoard("785243691931856724462971583457968132612573498398214657379524816285167349146839725")
-        self.assertEqual("794463321", board.get_column(1))
-        self.assertEqual("143287695", board.get_column(9))
+        self.assertEqual("794463321", board.get_column_str(1))
+        self.assertEqual("143287695", board.get_column_str(9))
 
-    def test_box_1_position_to_cell(self):
-        self.assertEqual((1, 1), SudokuBoard.box_position_to_cell(1, 1))
-        self.assertEqual((2, 2), SudokuBoard.box_position_to_cell(1, 5))
-        self.assertEqual((3, 3), SudokuBoard.box_position_to_cell(1, 9))
-
-    def test_box_5_position_to_cell(self):
-        self.assertEqual((5, 5), SudokuBoard.box_position_to_cell(5, 5))
-        self.assertEqual((6, 6), SudokuBoard.box_position_to_cell(5, 9))
-    
-    def test_box_9_position_to_cell(self):
-        self.assertEqual((8, 9), SudokuBoard.box_position_to_cell(9, 8))
-
-    def test_get_box(self):
+    def test_get_box_str(self):
         board = SudokuBoard("785243691931856724462971583457968132612573498398214657379524816285167349146839725")
-        self.assertEqual("785931462", board.get_box(1))
-        self.assertEqual("816349725", board.get_box(9))
+        self.assertEqual("785931462", board.get_box_str(1))
+        self.assertEqual("816349725", board.get_box_str(9))
+
+    def test_get_cell(self):
+        board = SudokuBoard("785243691931856724462971583457968132612573498398214657379524816285167349146839725")
+        self.assertEqual(7, board.get_cell(1, 1).value)
+        self.assertEqual(9, board.get_cell(1, 2).value)
+        self.assertEqual(5, board.get_cell(9, 9).value)
 
 if __name__ == '__main__':
     unittest.main()
+
+

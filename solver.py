@@ -1,6 +1,6 @@
 from typing import List
 
-from board import SudokuBoard
+from board import *
 
 
 class Solver:
@@ -12,35 +12,30 @@ class Solver:
 
 def solve_for_single_missing(board:SudokuBoard):
     for idx, row in enumerate(board.get_rows()):
-        number_of_unknowns = row.count('-')
+        number_of_unknowns = len([cell for cell in row if cell.is_value_unknown()])
         if number_of_unknowns > 1:
             print(f"row {idx+1} has {number_of_unknowns} unknowns")
         if number_of_unknowns == 1:
-            for i in range(1, 10):
-                if str(i) not in row:
-                    board.update_cell(idx+1, row.index('-')+1, i)
-                    break
+            missing_values = get_missing_values(row)
+            get_cell_with_value(row, 0).update_value(missing_values[0])
     for idx, column in enumerate(board.get_columns()):
-        number_of_unknowns = column.count('-')
+        number_of_unknowns = len([cell for cell in column if cell.is_value_unknown()])
         if number_of_unknowns > 1:
             print(f"column {idx+1} has {number_of_unknowns} unknowns")
-        if column.count('-') == 1:
-            for i in range(1, 10):
-                if str(i) not in column:
-                    board.update_cell(column.index('-')+1, idx+1, i)
-                    break
+        if number_of_unknowns == 1:
+            missing_values = get_missing_values(column)
+            get_cell_with_value(column, 0).update_value(missing_values[0])
     for idx, box in enumerate(board.get_boxes()):
-        number_of_unknowns = box.count('-')
+        number_of_unknowns = len([cell for cell in box if cell.is_value_unknown()])
         if number_of_unknowns > 1:
             print(f"box {idx+1} has {number_of_unknowns} unknowns")
         if number_of_unknowns == 1:
-            for i in range(1, 10):
-                if str(i) not in box:
-                    board.update_cell(box.index('-')+1, idx+1, i)
+            missing_values = get_missing_values(box)
+            get_cell_with_value(box, 0).update_value(missing_values[0])
 
 def solve_recursively(start: SudokuBoard) -> SudokuBoard:
-    copy = SudokuBoard(start.board)
+    copy = copy_board(start)
     solve_for_single_missing(copy)
-    if copy.board == start.board:
+    if copy.to_raw_string() == start.to_raw_string():
         return start
     return solve_recursively(copy)
