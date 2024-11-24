@@ -14,6 +14,8 @@ class Cell:
 
     def update_value(self, value):
         self.value = value
+        if value != 0:
+            self.possible_values = {value}
 
     def is_value_unknown(self) -> bool:
         return self.value == 0
@@ -31,7 +33,6 @@ class SudokuBoard:
             self.from_cells(board)
 
     def from_raw_string(self, raw_board):
-        self.raw_board = raw_board
         self.cells = []
         for index, char in enumerate(raw_board):
             row_idx = index // 9
@@ -71,23 +72,23 @@ class SudokuBoard:
         row_cells = self.rows[row_idx]
         return f"{row_cells[0]}{row_cells[1]}{row_cells[2]}|{row_cells[3]}{row_cells[4]}{row_cells[5]}|{row_cells[6]}{row_cells[7]}{row_cells[8]}"
 
-    def get_row(self, row_number:int) -> List[Cell]:
-        return self.rows[row_number-1]
+    def get_row(self, row_idx:int) -> List[Cell]:
+        return self.rows[row_idx]
 
-    def get_column(self, column_number:int) -> List[Cell]:
-        return self.columns[column_number-1]
+    def get_column(self, column_idx:int) -> List[Cell]:
+        return self.columns[column_idx]
 
-    def get_box(self, box_number:int) -> List[Cell]:
-        return self.boxes[box_number-1]
+    def get_box(self, box_idx:int) -> List[Cell]:
+        return self.boxes[box_idx]
 
-    def get_row_str(self, row_number:int) -> str:
-        return "".join([str(cell) for cell in self.get_row(row_number)])
+    def get_row_str(self, row_idx:int) -> str:
+        return "".join([str(cell) for cell in self.get_row(row_idx)])
 
-    def get_column_str(self, column_number:int) -> str:
-        return "".join([str(cell) for cell in self.get_column(column_number)])
+    def get_column_str(self, column_idx:int) -> str:
+        return "".join([str(cell) for cell in self.get_column(column_idx)])
 
-    def get_box_str(self, box_number:int) -> str:
-        return "".join([str(cell) for cell in self.get_box(box_number)])
+    def get_box_str(self, box_idx:int) -> str:
+        return "".join([str(cell) for cell in self.get_box(box_idx)])
 
     def get_rows(self):
         return self.rows
@@ -98,11 +99,11 @@ class SudokuBoard:
     def get_boxes(self):
         return self.boxes
 
-    def update_cell(self, column_number: int, row_number: int, value: int):
-        self.get_cell(column_number, row_number).update_value(value)
+    def update_cell(self, column_idx: int, row_idx: int, value: int):
+        self.get_cell(column_idx, row_idx).update_value(value)
 
-    def get_cell(self, column_number, row_number) -> Cell:
-        return self.get_column(column_number)[row_number-1]
+    def get_cell(self, column_idx, row_idx) -> Cell:
+        return self.get_column(column_idx)[row_idx]
 
 
 def copy_board(board:SudokuBoard) -> SudokuBoard:

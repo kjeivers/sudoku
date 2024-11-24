@@ -33,6 +33,14 @@ def solve_for_single_missing(board:SudokuBoard):
             missing_values = get_missing_values(box)
             get_cell_with_value(box, 0).update_value(missing_values[0])
 
+# def solve_possible_values(board:SudokuBoard):
+#     for cell in board.cells:
+#         if cell.is_value_unknown():
+#             board.get_row(cell.row_idx)
+#             possible_values = get_possible_values(board, cell)
+#             if len(possible_values) == 1:
+#                 cell.update_value(possible_values[0])
+
 def solve_recursively(start: SudokuBoard) -> SudokuBoard:
     copy = copy_board(start)
     solve_for_single_missing(copy)
