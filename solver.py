@@ -4,8 +4,11 @@ from board import *
 
 
 class Solver:
-    def __init__(self, board_str:str):
-        self.board = SudokuBoard(board_str)
+    def __init__(self, board: Union[str,SudokuBoard]):
+        if isinstance(board, str):
+            self.board = SudokuBoard(board)
+        else:
+            self.board = board
 
     def solve(self) -> SudokuBoard:
         return solve_recursively(self.board)
@@ -33,17 +36,24 @@ def solve_for_single_missing(board:SudokuBoard):
             missing_values = get_missing_values(box)
             get_cell_with_value(box, 0).update_value(missing_values[0])
 
-# def solve_possible_values(board:SudokuBoard):
-#     for cell in board.cells:
-#         if cell.is_value_unknown():
-#             board.get_row(cell.row_idx)
-#             possible_values = get_possible_values(board, cell)
-#             if len(possible_values) == 1:
-#                 cell.update_value(possible_values[0])
+def solve_possible_values(board:SudokuBoard):
+    def remove_from_possible_values(cell:Cell, lst:List[Cell]):
+        for item in lst:
+            if not item.is_value_unknown():
+                cell.remove_from_possible_values(item.value)
+
+    for cell in board.cells:
+        if cell.is_value_unknown():
+            remove_from_possible_values(cell, board.get_row(cell.row_idx))
+            remove_from_possible_values(cell, board.get_column(cell.col_idx))
+            remove_from_possible_values(cell,  board.get_box(cell.box_idx))
+            if len(cell.possible_values) == 1:
+                cell.update_value(next(iter(cell.possible_values)))
 
 def solve_recursively(start: SudokuBoard) -> SudokuBoard:
     copy = copy_board(start)
-    solve_for_single_missing(copy)
+    # solve_for_single_missing(copy)
+    solve_possible_values(copy)
     if copy.to_raw_string() == start.to_raw_string():
         return start
     return solve_recursively(copy)

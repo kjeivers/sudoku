@@ -1,5 +1,5 @@
 from typing import List, Union
-
+import re
 
 class Cell:
     def __init__(self, row_idx:int, col_idx:int, value:int):
@@ -20,6 +20,8 @@ class Cell:
     def is_value_unknown(self) -> bool:
         return self.value == 0
 
+    def remove_from_possible_values(self, value):
+        self.possible_values.discard(value)
 
 class SudokuBoard:
     def __init__(self, board: Union[str, List[Cell]]):
@@ -32,7 +34,8 @@ class SudokuBoard:
         else:
             self.from_cells(board)
 
-    def from_raw_string(self, raw_board):
+    def from_raw_string(self, raw_board:str):
+        raw_board = raw_board.translate(str.maketrans('', '', ' │─┼\n'))
         self.cells = []
         for index, char in enumerate(raw_board):
             row_idx = index // 9
@@ -58,11 +61,11 @@ class SudokuBoard:
             self.pretty_print_row(0),
             self.pretty_print_row(1),
             self.pretty_print_row(2),
-            "---+---+---",
+            "───┼───┼───",
             self.pretty_print_row(3),
             self.pretty_print_row(4),
             self.pretty_print_row(5),
-            "---+---+---",
+            "───┼───┼───",
             self.pretty_print_row(6),
             self.pretty_print_row(7),
             self.pretty_print_row(8),
@@ -70,7 +73,7 @@ class SudokuBoard:
 
     def pretty_print_row(self, row_idx:int) -> str:
         row_cells = self.rows[row_idx]
-        return f"{row_cells[0]}{row_cells[1]}{row_cells[2]}|{row_cells[3]}{row_cells[4]}{row_cells[5]}|{row_cells[6]}{row_cells[7]}{row_cells[8]}"
+        return f"{row_cells[0]}{row_cells[1]}{row_cells[2]}│{row_cells[3]}{row_cells[4]}{row_cells[5]}│{row_cells[6]}{row_cells[7]}{row_cells[8]}"
 
     def get_row(self, row_idx:int) -> List[Cell]:
         return self.rows[row_idx]
