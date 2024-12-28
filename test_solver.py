@@ -79,7 +79,7 @@ class TestCases(unittest.TestCase):
             """)
 
         solution = SudokuBoard("""
-            589│127│364
+            598│127│364
             427│369│518
             136│854│972
             ───┼───┼───

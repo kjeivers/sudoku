@@ -44,11 +44,33 @@ def solve_possible_values(board:SudokuBoard):
 
     for cell in board.cells:
         if cell.is_value_unknown():
+            # check rows, columns and boxes for already used values
             remove_from_possible_values(cell, board.get_row(cell.row_idx))
             remove_from_possible_values(cell, board.get_column(cell.col_idx))
             remove_from_possible_values(cell,  board.get_box(cell.box_idx))
+
             if len(cell.possible_values) == 1:
                 cell.update_value(next(iter(cell.possible_values)))
+
+    def is_only_possible_in_this_cell(cell:Cell, value:int, lst:List[Cell]) -> bool:
+        for other_cell in lst:
+            if other_cell != cell and value in other_cell.possible_values:
+                return False
+        return True
+
+    for cell in board.cells:
+        if cell.is_value_unknown():
+            for value in cell.possible_values:
+                # check if value is only possible in row, column or box
+                if is_only_possible_in_this_cell(cell, value, board.get_row(cell.row_idx)):
+                    cell.update_value(value)
+                    break
+                if is_only_possible_in_this_cell(cell, value, board.get_column(cell.col_idx)):
+                    cell.update_value(value)
+                    break
+                if is_only_possible_in_this_cell(cell, value, board.get_box(cell.box_idx)):
+                    cell.update_value(value)
+                    break
 
 def solve_recursively(start: SudokuBoard) -> SudokuBoard:
     copy = copy_board(start)
